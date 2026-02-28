@@ -36,23 +36,13 @@ Random disease detection simulation
 Embedded Sketchfab 3D model
 📱 Fully Responsive UI
 Mobile-friendly layout
-⚙ Installation
-1. Clone the Repository
-Bash
-Copy code
-git clone https://github.com/yourusername/smartfarm.git
-cd smartfarm
-2. No Package Installation Required
-This is a static web project.
+
 ▶ Run Instructions
 Simply open:
-Bash
-Copy code
-index.html
-OR
+https://rianabinoyc-crypto.github.io/smartfarm/
 Use Live Server in VS Code:
 Bash
-Copy code
+https://rianabinoyc-crypto.github.io/smartfarm/
 Right click → Open with Live Server
 User
   │
@@ -69,8 +59,7 @@ Frontend (HTML/CSS/JS)
 
 📘 API Documentation
 OpenWeather API
-Endpoint:
-Copy code
+
 
 https://api.openweathermap.org/data/2.5/weather
 
