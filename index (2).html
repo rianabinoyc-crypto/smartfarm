@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartFarm</title>
+<link rel="icon" type="image/png" href="\\wsl.localhost\Ubuntu\home\riana\hack\farmer.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+
+/* 3D Background */
+.background-3d{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+  z-index:-2;
+}
+.background-3d iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+.overlay{
+  position:fixed;
+  width:100%;
+  height:100vh;
+  background:rgba(0,0,0,0.65);
+  z-index:-1;
+}
+
+/* Navigation */
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:white;
+  z-index:10;
+}
+nav ul{
+  list-style:none;
+  display:flex;
+  gap:30px;
+}
+nav a{
+  color:white;
+  text-decoration:none;
+}
+
+/* Hero */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:white;
+}
+.hero h1{ font-size:48px; margin-bottom:20px; }
+
+.button-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+  max-width:800px;
+}
+.btn{
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+.weather{background:#2e7d32;}
+.crop{background:#558b2f;}
+.market{background:#ff8f00;}
+.disease{background:#c62828;}
+
+/* Cards */
+.card{
+  max-width:600px;
+  margin:40px auto;
+  padding:20px;
+  background:white;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  text-align:center;
+}
+
+input, button{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+th, td{
+  border:1px solid #ccc;
+  padding:8px;
+}
+th{
+  background:#4CAF50;
+  color:white;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  background:black;
+  color:white;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width:768px){
+  nav{
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px;
+  }
+  nav ul{
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .hero h1{
+    font-size: 32px;
+    padding: 0 10px;
+  }
+  .button-grid{
+    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+    gap: 10px;
+    width: 95%;
+  }
+  .card{
+    width: 95%;
+    padding: 15px;
+    margin: 20px auto;
+  }
+  table{
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 3D Background -->
+<div class="background-3d">
+  <iframe src="https://sketchfab.com/models/26d83e7a3fe84aaaad299afaa6489785/embed?autostart=1&ui_controls=0"></iframe>
+</div>
+<div class="overlay"></div>
+
+<!-- Navigation -->
+<nav>
+  <h2>🌾 SmartFarm</h2>
+  <ul>
+    <li><a href="#weather">Weather</a></li>
+    <li><a href="#crop">Crop</a></li>
+    <li><a href="#market">Market</a></li>
+    <li><a href="#disease">Disease</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>Smart Agriculture Platform</h1>
+  <div class="button-grid">
+    <button class="btn weather" onclick="scrollToSection('weather')">Weather</button>
+    <button class="btn crop" onclick="scrollToSection('crop')">Crop</button>
+    <button class="btn market" onclick="scrollToSection('market')">Market</button>
+    <button class="btn disease" onclick="scrollToSection('disease')">Disease</button>
+  </div>
+</section>
+
+<!-- WEATHER -->
+<div id="weather" class="card">
+  <h2>Weather Dashboard</h2>
+  <input type="text" id="city" placeholder="Enter City Name">
+  <button onclick="getWeather()">Get Weather</button>
+  <div id="weatherResult"></div>
+</div>
+
+<!-- CROP -->
+<div id="crop" class="card">
+  <h2>Crop Recommendation</h2>
+  <input type="number" id="temperature" placeholder="Temperature °C">
+  <input type="number" id="rainfall" placeholder="Rainfall mm">
+  <button onclick="recommendCrop()">Recommend Crop</button>
+  <h3 id="cropResult"></h3>
+</div>
+
+<!-- MARKET -->
+<div id="market" class="card">
+  <h2>Market Price Advisory</h2>
+  <input type="text" id="search" placeholder="Search crop..." onkeyup="filterTable()">
+  <table id="priceTable">
+    <tr>
+      <th>Crop</th>
+      <th>State</th>
+      <th>City</th>
+      <th>Modal Price</th>
+      <th>Trend</th>
+    </tr>
+    <tbody>
+      <tr><td>Rice</td><td>Kerala</td><td>Kochi</td><td>45</td><td style="color:green;font-weight:bold;">Rising</td></tr>
+      <tr><td>Wheat</td><td>Punjab</td><td>Ludhiana</td><td>32</td><td style="color:orange;font-weight:bold;">Stable</td></tr>
+      <tr><td>Maize</td><td>Tamil Nadu</td><td>Salem</td><td>28</td><td style="color:green;font-weight:bold;">Rising</td></tr>
+      <tr><td>Cotton</td><td>Maharashtra</td><td>Nagpur</td><td>62</td><td style="color:red;font-weight:bold;">Falling</td></tr>
+      <tr><td>Onion</td><td>Delhi</td><td>Azadpur</td><td>22</td><td style="color:green;font-weight:bold;">Rising</td></tr>
+      <tr><td>Tomato</td><td>Karnataka</td><td>Bangalore</td><td>26</td><td style="color:red;font-weight:bold;">Falling</td></tr>
+      <tr><td>Potato</td><td>Uttar Pradesh</td><td>Kanpur</td><td>19</td><td style="color:orange;font-weight:bold;">Stable</td></tr>
+      <tr><td>Sugarcane</td><td>Maharashtra</td><td>Kolhapur</td><td>34</td><td style="color:green;font-weight:bold;">Rising</td></tr>
+      <tr><td>Groundnut</td><td>Tamil Nadu</td><td>Madurai</td><td>52</td><td style="color:orange;font-weight:bold;">Stable</td></tr>
+      <tr><td>Barley</td><td>Punjab</td><td>Patiala</td><td>27</td><td style="color:red;font-weight:bold;">Falling</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DISEASE -->
+<div id="disease" class="card">
+  <h2>AI Plant Disease Detector</h2>
+  <input type="file" id="imageUpload" accept="image/*">
+  <button onclick="detectDisease()">Detect Disease</button>
+  <p id="diseaseResult"></p>
+</div>
+
+<!-- ABOUT US -->
+<div id="about" class="card">
+  <h2>About Us</h2>
+  <p>
+    Welcome to <strong>SmartFarm</strong> – your intelligent agriculture platform.  
+    We help farmers make informed decisions with real-time weather updates, crop recommendations, market price insights, and AI-based plant disease detection.  
+    Our mission is to increase productivity, reduce losses, and promote sustainable farming practices.
+  </p>
+  <p><strong>Phone:</strong> 6282XXXXX</p>
+  <p><strong>Email:</strong> <a href="mailto:rianabinoyc@gmail.com">rianabinoyc@gmail.com</a></p>
+  <p><strong>Address:</strong> SmartFarm Tech, Bengaluru, India</p>
+</div>
+
+<footer>© 2026 SmartFarm</footer>
+
+<script>
+// ================= WEATHER API =================
+const apiKey = "0ef71dcaf0648e6dd3b5f02bfb1bd0f5";
+
+function getWeather(){
+  const city = document.getElementById("city").value;
+
+  if(!city){
+    alert("Please enter a city name");
+    return;
+  }
+
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+    .then(response => response.json())
+    .then(data => {
+      if(data.cod != 200){
+        document.getElementById("weatherResult").innerHTML = "City not found!";
+        return;
+      }
+
+      document.getElementById("weatherResult").innerHTML = `
+        <p><strong>City:</strong> ${data.name}</p>
+        <p><strong>Temperature:</strong> ${data.main.temp} °C</p>
+        <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
+        <p><strong>Wind Speed:</strong> ${data.wind.speed} m/s</p>
+      `;
+    })
+    .catch(error => {
+      document.getElementById("weatherResult").innerHTML = "Error fetching weather data.";
+    });
+}
+
+// ================= SCROLL =================
+function scrollToSection(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+// ================= CROP =================
+function recommendCrop(){
+  let temp = document.getElementById("temperature").value;
+  let rain = document.getElementById("rainfall").value;
+  let crop = "No suitable crop";
+
+  if(rain > 200) crop = "Rice";
+  else if(temp >= 20 && temp <= 30) crop = "Wheat";
+  else if(temp > 30) crop = "Millets";
+
+  document.getElementById("cropResult").innerText =
+    "Recommended Crop: " + crop;
+}
+
+// ================= MARKET =================
+function filterTable(){
+  let input = document.getElementById("search").value.toLowerCase();
+  let rows = document.getElementById("priceTable").rows;
+  for(let i=1;i<rows.length;i++){
+    let crop = rows[i].cells[0].innerText.toLowerCase();
+    rows[i].style.display = crop.includes(input) ? "" : "none";
+  }
+}
+
+// ================= DISEASE =================
+function detectDisease(){
+  const diseases = ["Healthy Leaf","Powdery Mildew","Leaf Spot","Rust Disease"];
+  const result = diseases[Math.floor(Math.random()*diseases.length)];
+  document.getElementById("diseaseResult").innerText =
+    "Detected: " + result;
+}
+</script>
+
+</body>
+</html>
