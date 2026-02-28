@@ -1,0 +1,9 @@
+.hidden {
+    display: none;
+}
+
+.active-section {
+    padding: 50px;
+    background: white;
+    color: black;
+}

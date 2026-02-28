@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartFarm | 3D Agriculture Platform</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+
+/* 3D BACKGROUND */
+.background-3d{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+  z-index:-2;
+}
+
+.background-3d iframe{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+/* DARK OVERLAY */
+.overlay{
+  position:fixed;
+  width:100%;
+  height:100vh;
+  background:rgba(0,0,0,0.65);
+  z-index:-1;
+}
+
+/* NAVIGATION */
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:white;
+  z-index:10;
+}
+
+nav h2{
+  font-weight:700;
+  letter-spacing:1px;
+}
+
+nav ul{
+  list-style:none;
+  display:flex;
+  gap:30px;
+}
+
+nav a{
+  text-decoration:none;
+  color:white;
+  font-weight:500;
+  transition:0.3s;
+}
+
+nav a:hover{
+  color:#81c784;
+}
+
+/* HERO SECTION */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+  color:white;
+}
+
+.hero h1{
+  font-size:48px;
+  font-weight:700;
+  margin-bottom:20px;
+}
+
+.hero p{
+  font-size:18px;
+  max-width:700px;
+  margin-bottom:40px;
+  font-weight:300;
+  line-height:1.6;
+}
+
+/* BUTTON GRID */
+.button-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+  gap:20px;
+  width:100%;
+  max-width:900px;
+}
+
+.btn{
+  padding:18px;
+  border-radius:12px;
+  border:none;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  backdrop-filter:blur(10px);
+}
+
+/* Button Colors */
+.weather{ background:#2e7d32; color:white; }
+.weather:hover{ background:#1b5e20; }
+
+.crop{ background:#558b2f; color:white; }
+.crop:hover{ background:#33691e; }
+
+.market{ background:#ff8f00; color:white; }
+.market:hover{ background:#ef6c00; }
+
+.disease{ background:#c62828; color:white; }
+.disease:hover{ background:#8e0000; }
+
+/* CARDS */
+.card{
+  max-width:500px;
+  margin:30px auto;
+  padding:20px;
+  background:rgba(255,255,255,0.9);
+  border-radius:10px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.1);
+  text-align:center;
+}
+
+/* INPUTS AND TABLES */
+input, button { width:100%; padding:10px; margin:6px 0; border-radius:5px; border:1px solid #ccc; }
+button { border:none; cursor:pointer; }
+button:hover { opacity:0.9; }
+
+table { width:100%; border-collapse:collapse; margin-top:10px; }
+table, th, td { border:1px solid #ccc; }
+th { background:#4CAF50; color:white; }
+td, th { padding:8px; text-align:center; }
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:20px;
+  color:white;
+  background:rgba(0,0,0,0.6);
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero h1{ font-size:32px; }
+  nav{ flex-direction:column; gap:10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 3D BACKGROUND -->
+<div class="background-3d">
+  <iframe 
+    title="Farmer's House"
+    allowfullscreen
+    allow="autoplay; fullscreen; xr-spatial-tracking"
+    src="https://sketchfab.com/models/26d83e7a3fe84aaaad299afaa6489785/embed?autostart=1&ui_controls=0&ui_infos=0">
+  </iframe>
+</div>
+<div class="overlay"></div>
+
+<!-- NAVIGATION -->
+<nav>
+  <h2>🌾 SmartFarm</h2>
+  <ul>
+    <li><a href="#weather">Weather</a></li>
+    <li><a href="#crop">Crop</a></li>
+    <li><a href="#market">Market</a></li>
+    <li><a href="#disease">Disease</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Smart Agriculture Platform</h1>
+  <p>Monitor real-time weather, get crop recommendations, check market prices, and detect plant diseases using intelligent farming tools.</p>
+  <div class="button-grid">
+    <button class="btn weather" onclick="scrollToSection('weather')">🌦 Weather Dashboard</button>
+    <button class="btn crop" onclick="scrollToSection('crop')">🌱 Crop Recommendation</button>
+    <button class="btn market" onclick="scrollToSection('market')">💰 Market Price Adviser</button>
+    <button class="btn disease" onclick="scrollToSection('disease')">🦠 Plant Disease Detection</button>
+  </div>
+</section>
+
+<!-- WEATHER DASHBOARD -->
+<div id="weather" class="card">
+  <h2>Weather Dashboard</h2>
+  <button id="detectWeather">Detect My Location</button>
+  <input type="text" id="city" placeholder="Enter City">
+  <button onclick="getWeather()">Get Weather</button>
+  <div id="weatherResult"></div>
+  <div id="result"></div>
+</div>
+
+<!-- CROP RECOMMENDATION -->
+<div id="crop" class="card">
+  <h2>Crop Recommendation System</h2>
+  <input type="number" id="N" placeholder="Nitrogen (N)">
+  <input type="number" id="P" placeholder="Phosphorus (P)">
+  <input type="number" id="K" placeholder="Potassium (K)">
+  <input type="number" id="temperature" placeholder="Temperature (°C)">
+  <input type="number" id="humidity" placeholder="Humidity (%)">
+  <input type="number" id="ph" placeholder="Soil pH">
+  <input type="number" id="rainfall" placeholder="Rainfall (mm)">
+  <button onclick="recommendCrop()">Recommend Crop</button>
+  <h3 id="cropResult"></h3>
+</div>
+
+<!-- MARKET PRICE ADVISORY -->
+<div id="market" class="card">
+  <h2>Market Price Advisory</h2>
+  <input type="text" id="search" placeholder="Search crop...">
+  <table id="priceTable">
+    <tr><th>Crop</th><th>Mandi</th><th>Price (₹/kg)</th><th>Trend</th></tr>
+    <tr><td>Rice</td><td>Kochi</td><td>45</td><td style="color:green;">Rising</td></tr>
+    <tr><td>Wheat</td><td>Delhi</td><td>32</td><td style="color:red;">Falling</td></tr>
+    <tr><td>Maize</td><td>Chennai</td><td>28</td><td style="color:green;">Rising</td></tr>
+    <tr><td>Cotton</td><td>Mumbai</td><td>62</td><td style="color:orange;">Stable</td></tr>
+  </table>
+</div>
+
+
+
+
+<script>
+// Scroll to section
+function scrollToSection(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+// ==========================
+// WEATHER DASHBOARD
+// ==========================
+const weatherButton = document.getElementById("detectWeather");
+const weatherResult = document.getElementById("weatherResult");
+const cityInput = document.getElementById("city");
+const resultDiv = document.getElementById("result");
+
+const weatherApiKey = "YOUR_OPENWEATHER_API_KEY"; // Replace with your OpenWeatherMap API key
+
+if(weatherButton){
+  weatherButton.addEventListener("click", () => {
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchWeatherByCoords(lat, lon);
+      }, error => {
+        weatherResult.innerHTML = "Unable to detect location.";
+      });
+    } else {
+      weatherResult.innerHTML = "Geolocation not supported by browser.";
+    }
+  });
+}
+
+function getWeather(){
+  const city = cityInput.value;
+  if(!city) {
+    resultDiv.innerHTML = "Please enter a city!";
+    return;
+  }
+
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric`)
+    .then(res => res.json())
+    .then(data => displayWeather(data))
+    .catch(err => { resultDiv.innerHTML = "Error fetching weather data."; });
+}
+
+function fetchWeatherByCoords(lat, lon){
+  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`)
+    .then(res => res.json())
+    .then(data => displayWeather(data))
+    .catch(err => { weatherResult.innerHTML = "Error fetching weather data."; });
+}
+
+function displayWeather(data){
+  if(data.cod !== 200 && data.cod !== "200"){
+    resultDiv.innerHTML = "City not found!";
+    return;
+  }
+  const temp = data.main.temp;
+  const humidity = data.main.humidity;
+  const wind = data.wind.speed;
+  const city = data.name;
+
+  let html = `
+    <p><strong>City:</strong> ${city}</p>
+    <p><strong>Temperature:</strong> ${temp} °C</p>
+    <p><strong>Humidity:</strong> ${humidity}%</p>
+    <p><strong>Wind:</strong> ${wind} km/h</p>
+  `;
+  resultDiv.innerHTML = html;
+  weatherResult.innerHTML = html;
+}
+
+// ==========================
+// CROP RECOMMENDATION
+// ==========================
+function recommendCrop(){
+  let N = parseFloat(document.getElementById("N").value);
+  let P = parseFloat(document.getElementById("P").value);
+  let K = parseFloat(document.getElementById("K").value);
+  let temp = parseFloat(document.getElementById("temperature").value);
+  let humidity = parseFloat(document.getElementById("humidity").value);
+  let ph = parseFloat(document.getElementById("ph").value);
+  let rainfall = parseFloat(document.getElementById("rainfall").value);
+
+  let crop = "No suitable crop found";
+
+  if(rainfall > 200 && humidity > 80) crop = "Rice";
+  else if(temp >= 20 && temp <= 30 && ph >= 6 && ph <= 7.5 && rainfall < 200) crop = "Wheat";
+  else if(temp >= 25 && humidity >= 60 && rainfall >= 100) crop = "Maize";
+  else if(ph < 6 && rainfall > 150) crop = "Cotton";
+  else if(temp > 30 && rainfall < 100) crop = "Millets";
+
+  document.getElementById("cropResult").innerHTML = "Recommended Crop: " + crop;
+}
+
+// ==========================
+// MARKET PRICE ADVISORY
+// ==========================
+function filterTable(){
+  let input = document.getElementById("search").value.toLowerCase();
+  let rows = document.getElementById("priceTable").rows;
+  for(let i=1; i<rows.length; i++){
+    let crop = rows[i].cells[0].innerText.toLowerCase();
+    rows[i].style.display = crop.includes(input) ? "" : "none";
+  }
+}
+const searchInput = document.getElementById("search");
+if(searchInput) searchInput.addEventListener("keyup", filterTable);
+</script>
+
+<head>
+    <title>AI Plant Disease Detector</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f4f9f4;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #2e7d32;
+        }
+
+        input, button {
+            margin: 15px;
+            padding: 10px;
+        }
+
+        button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1b5e20;
+        }
+
+        img {
+            margin-top: 20px;
+            max-width: 250px;
+            border-radius: 8px;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+
+<h1>🌱 AI Plant Disease Detector</h1>
+
+<input type="file" id="imageUpload" accept="image/*">
+<br>
+<button onclick="detectDisease()">Detect Disease</button>
+
+<br>
+<img id="preview">
+<div id="disease" class="card"></div>
+
+<script>
+document.getElementById("imageUpload").addEventListener("change", function(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        document.getElementById("preview").src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+});
+
+function detectDisease() {
+
+    // Simulated AI Prediction
+    const diseases = [
+        "Healthy Leaf",
+        "Powdery Mildew",
+        "Leaf Spot",
+        "Bacterial Blight",
+        "Rust Disease"
+    ];
+
+    const randomResult = diseases[Math.floor(Math.random() * diseases.length)];
+
+    document.getElementById("result").innerHTML =
+        "Detected Disease: " + randomResult;
+}
+</script>
+<!-- ABOUT US -->
+<div id="about" class="card">
+  <h2>About Us</h2>
+  <p>
+    Welcome to <strong>SmartFarm</strong> – your intelligent agriculture platform.  
+    We provide real-time weather updates, crop recommendations, market price insights, and plant disease detection tools to help farmers make data-driven decisions and maximize productivity.
+  </p>
+  <p><strong>Phone:</strong> 6282XXXXX</p>
+  <p><strong>Email:</strong> <a href="mailto:rianabinoyc@gmail.com">rianabinoyc@gmail.com</a></p>
+</div>
+<footer>© 2026 SmartFarm | 3D Agriculture Platform</footer>
+
+</body>
+</html>
